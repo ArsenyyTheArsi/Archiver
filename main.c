@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
                 i++;
             }
             else {
-                printf("������: �� ������ ���� � ������ ��� ������\n");
+                printf("Error: Archive or file path not specified.\n");
                 return 1;
             }
         }
