@@ -209,6 +209,3 @@ void delete_files_from_archive(const char* archive_path, const char* files_to_ar
  
     fclose(archive_file); 
 }
- 
-    fclose(archive_file); 
-}
