@@ -76,6 +76,92 @@ void add_files_to_archive(const char* archive_path, const char* files_to_archive
         fclose(file); 
         token = strtok(NULL, " "); 
     } 
+
+void delete_files_from_archive(const char* archive_path, const char* files_to_archive) { 
+    FILE* archive_file = fopen(archive_path, "rb"); 
+    if (archive_file == NULL) { 
+        printf("Error: cannot open archive\n"); 
+        return; 
+    } 
+ 
+    // Temporary file for storing the archive with deleted files 
+    char temp_filename[] = "temp_archive.tmp"; 
+    FILE* temp_file = fopen(temp_filename, "wb"); 
+    if (temp_file == NULL) { 
+        printf("Error: cannot create temporary file\n"); 
+        fclose(archive_file); 
+        return; 
+    } 
+ 
+    // Split the list of files into separate lines 
+    char* token = strtok((char*)files_to_archive, " "); 
+    // Create an array to store the names of files to be deleted 
+    char** files_to_delete = malloc(100 * sizeof(char*)); // Assume a maximum of 100 files 
+    int file_count = 0; 
+    while (token != NULL) { 
+        if (verbose) { 
+            printf("Deleting file: %s\n", token); 
+        } 
+        files_to_delete[file_count] = strdup(token); // Duplicate the line to avoid changing the original list 
+        file_count++; 
+        token = strtok(NULL, " "); 
+    } 
+ 
+    // Read data from the source archive and write it to a temporary file 
+    char buffer[1024]; 
+    char filename[256]; 
+    while (fgets(buffer, sizeof(buffer), archive_file) != NULL) { 
+        if (strncmp(buffer, "File: ", 6) == 0) { 
+            sscanf(buffer, "File: %s\n", filename); 
+ 
+            // Check if this file needs to be deleted 
+            int delete_file = 0; 
+            for (int i = 0; i < file_count; i++) { 
+                if (strcmp(files_to_delete[i], filename) == 0) { 
+                    delete_file = 1; 
+                    break; 
+                } 
+            } 
+ 
+            if (delete_file) { 
+                // Skip writing file data to the temporary file 
+                // Continue reading until the next "File: " 
+                while (fgets(buffer, sizeof(buffer), archive_file) != NULL) { 
+                    if (strncmp(buffer, "File: ", 6) == 0) { 
+                        break; // Reached the next file 
+                    } 
+                } 
+            } else { 
+                // Write file header to the temporary file 
+                fwrite(buffer, strlen(buffer), 1, temp_file); 
+ 
+                // Write the contents of the file to the temporary file 
+                while (fgets(buffer, sizeof(buffer), archive_file) != NULL) { 
+                    if (strncmp(buffer, "File: ", 6) == 0) { 
+                        break; // Reached the next file 
+                    } 
+                    fwrite(buffer, 1, strlen(buffer), temp_file); 
+                } 
+            } 
+        } else { 
+            // Write data to the temporary file (this is not file data) 
+            fwrite(buffer, strlen(buffer), 1, temp_file); 
+        } 
+    } 
+ 
+    fclose(archive_file); 
+    fclose(temp_file); 
+ 
+    // Free the memory allocated for the file array 
+    for (int i = 0; i < file_count; i++) { 
+        free(files_to_delete[i]); 
+    } 
+    free(files_to_delete); 
+ 
+    // Move the temporary file to the original archive file 
+    remove(archive_path); // Delete the original file 
+    rename(temp_filename, archive_path); // Rename the temporary file 
+}
  
     fclose(archive_file); 
 }
