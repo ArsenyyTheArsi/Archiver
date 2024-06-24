@@ -163,6 +163,25 @@ void delete_files_from_archive(const char* archive_path, const char* files_to_ar
     rename(temp_filename, archive_path); // Rename the temporary file 
 }
 
+void list_archive(const char* archive_path) { 
+    FILE* archive_file = fopen(archive_path, "rb"); 
+    if (archive_file == NULL) { 
+        printf("Error: cannot open archive\n"); 
+        return; 
+    } 
+ 
+    char buffer[1024]; 
+    while (fgets(buffer, sizeof(buffer), archive_file) != NULL) { 
+        if (strncmp(buffer, "File: ", 6) == 0) { 
+            char* filename = buffer + 6; 
+            filename[strlen(filename) - 1] = '\0'; // Remove the newline character 
+            printf("File: %s\n", filename); 
+        } 
+    } 
+ 
+    fclose(archive_file); 
+}
+
     void extract_archive(const char* archive_path, const char* output_path) { 
     FILE* archive_file = fopen(archive_path, "rb"); 
     if (archive_file == NULL) { 
