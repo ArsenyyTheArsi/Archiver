@@ -1,10 +1,10 @@
 # /Team 2/Archiever
 
-Для компиляции в gcc использовать:
+## Компиляция
 
 gcc main.c functions/create_zip.c functions/extract_zip.c functions/list_archive.c functions/add_files_to_archive.c functions/delete_files_from_archive.c -o Archiver -Ifunctions 
 
-# Функции
+## Функции
 
 - "-c" или "--create" – создать архив.
 - "-x" или "--extract" – извлечь архив.
