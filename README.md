@@ -1,4 +1,4 @@
-# Team 2/Archiever
+# /Team 2/Archiever
 
 Для компиляции в gcc использовать:
 
