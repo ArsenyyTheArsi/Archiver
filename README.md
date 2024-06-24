@@ -35,4 +35,4 @@ gcc main.c functions/create_zip.c functions/extract_zip.c functions/list_archive
 
 6. Если архив находится в той же директории, что и программа, используйте параметр -f
 Например:
-<Название программы.exe> -l -f <название архив>
+- <Название программы.exe> -l -f <название архив>
