@@ -162,6 +162,53 @@ void delete_files_from_archive(const char* archive_path, const char* files_to_ar
     remove(archive_path); // Delete the original file 
     rename(temp_filename, archive_path); // Rename the temporary file 
 }
+
+    void extract_archive(const char* archive_path, const char* output_path) { 
+    FILE* archive_file = fopen(archive_path, "rb"); 
+    if (archive_file == NULL) { 
+        printf("Error: cannot open archive\n"); 
+        return; 
+    } 
+ 
+    char buffer[1024]; 
+    char filename[256]; 
+    while (fgets(buffer, sizeof(buffer), archive_file) != NULL) { 
+        if (strncmp(buffer, "File: ", 6) == 0) { 
+            // Extract the file name from the header 
+            sscanf(buffer, "File: %s\n", filename); 
+ 
+            if (verbose) { 
+                printf("Extracting file: %s\n", filename); 
+            } 
+ 
+            // Create a path to save the file if output_path is specified 
+            char full_path[512] = { 0 }; 
+            if (output_path != NULL) { 
+                sprintf(full_path, "%s/%s", output_path, filename); 
+            } 
+            else { 
+                strcpy(full_path, filename); 
+            } 
+ 
+            // Open a file for writing 
+            FILE* extracted_file = fopen(full_path, "wb"); 
+            if (extracted_file == NULL) { 
+                printf("Error: cannot create file %s\n", full_path); 
+                continue; // Skip this file 
+            } 
+ 
+            // Read and write data from the archive to the file 
+            size_t bytes_read; 
+            while ((bytes_read = fread(buffer, 1, sizeof(buffer), archive_file)) > 0) { 
+                fwrite(buffer, 1, bytes_read, extracted_file); 
+            } 
+ 
+            fclose(extracted_file); 
+        } 
+    } 
+ 
+    fclose(archive_file); 
+}
  
     fclose(archive_file); 
 }
