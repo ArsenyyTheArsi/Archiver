@@ -64,13 +64,13 @@ int main(int argc, char* argv[]) {
                 i++;
             }
             else {
-                printf("������: �� ������ ������� ������\n");
+                printf("Error: Compression level not specified.\n");
                 return 1;
             }
         }
         else if (argv[i][0] == '-') {
             // Unknown parameter
-            printf("������: ����������� ��������: %s\n", argv[i]);
+            printf("Error: Unknown parameter: %s\n", argv[i]);
             return 1;
         }
         else {
@@ -86,10 +86,10 @@ int main(int argc, char* argv[]) {
     }
 
     if (verbose) {
-        printf("���� � ������: %s\n", archive_path);
-        printf("���� ��� ����������: %s\n", output_path);
-        printf("����� ��� ���������: %s\n", files_to_archive);
-        printf("������� ������: %d\n", compression_level);
+        printf("Archive path: %s\n", archive_path);
+        printf("Output path: %s\n", output_path);
+        printf("Files to archive: %s\n", files_to_archive);
+        printf("Compression level: %d\n", compression_level);
     }
 
     switch (operation) {
@@ -98,21 +98,21 @@ int main(int argc, char* argv[]) {
         break;
     case 2:
         extract_archive(archive_path, output_path);
-        printf("���������� ������: %s\n", archive_path);
+        printf("Extract archive: %s\n", archive_path);
         break;
     case 3:
         list_archive(archive_path);
         break;
     case 4:
         add_files_to_archive(archive_path, files_to_archive, compression_level);
-        printf("���������� ������ � �����: %s\n", archive_path);
+        printf("Add files to archive: %s\n", archive_path);
         break;
     case 5:
         delete_files_from_archive(archive_path, files_to_archive);
-        printf("�������� ������ �� ������: %s\n", archive_path);
+        printf("Remove files from archive: %s\n", archive_path);
         break;
     default:
-        printf("������: �� ������� ��������\n");
+        printf("Error: No operation specified.\n");
         return 1;
     }
 
