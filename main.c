@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
                 i++;
             }
             else {
-                printf("������: �� ������ ���� ��� ����������\n");
+                printf("Error: Save path not specified.\n");
                 return 1;
             }
         }
