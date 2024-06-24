@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
                     compression_level = 2;
                 }
                 else {
-                    printf("������: �������� ������� ������\n");
+                    printf("Error: Invalid compression level.\n");
                     return 1;
                 }
                 i++;
